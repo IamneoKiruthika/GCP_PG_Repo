@@ -23,14 +23,19 @@ jobs:
       with:
         credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
+    - name: Grant execute permission for Maven Wrapper
+      working-directory: ./springapp  # Update this path based on the actual location of your backend directory
+      run: |
+        chmod +x ./mvnw
+
     - name: Build backend
-      working-directory: ./springapp  # Updated path to backend directory
+      working-directory: ./springapp
       run: |
         ./mvnw clean package
 
     - name: Deploy backend to App Engine
       run: |
-        gcloud app deploy springapp/backend/app.yaml --quiet  # Updated path to app.yaml
+        gcloud app deploy backend/app.yaml --quiet
 
     - name: Verify deployment
       run: |
