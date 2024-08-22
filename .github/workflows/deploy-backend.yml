@@ -37,5 +37,6 @@ jobs:
 
       - name: Deploy to App Engine
         run: |
+          cd springapp
           gcloud app deploy --quiet
  
