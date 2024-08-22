@@ -1,42 +1,41 @@
-name: Deploy Backend to Google App Engine
+name: Deploy to GCP App Engine
 
 on:
   push:
     branches:
-      - main  # Trigger deployment on pushes to the main branch
+      - main
 
 jobs:
-  build-and-deploy-backend:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v2
-      with:
-        version: '405.0.0'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '17'
 
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v1
-      with:
-        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - name: Build with Maven
+        run: |
+          cd springapp 
+          mvn clean package -DskipTests
 
-    - name: Grant execute permission for Maven Wrapper
-      working-directory: ./springapp  # Update this path based on the actual location of your backend directory
-      run: |
-        chmod +x mvnw
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-    - name: Build backend
-      working-directory: ./springapp
-      run: |
-        ./mvnw clean package
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: united-zenith-431805-h9
+          export_default_credentials: true
 
-    - name: Deploy backend to App Engine
-      run: |
-        gcloud app deploy backend/app.yaml --quiet
-
-    - name: Verify deployment
-      run: |
-        gcloud app browse
+      - name: Deploy to App Engine
+        run: |
+          gcloud app deploy --quiet
+ 
