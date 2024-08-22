@@ -1,7 +1,0 @@
-runtime: java11  # Use java17 or another compatible Java runtime
-instance_class: F2  # Optional: specify the instance class
-service: newbkend
-
-handlers:
-  - url: /.*
-    script: this field is required, but ignored
