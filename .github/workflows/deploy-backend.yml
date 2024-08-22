@@ -16,7 +16,7 @@ jobs:
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
       with:
-        version: '405.0.0'  # Specify the version of gcloud you want to use
+        version: '405.0.0'
 
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v1
@@ -24,13 +24,13 @@ jobs:
         credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
     - name: Build backend
-      working-directory: ./backend
+      working-directory: ./springapp/backend  # Updated path to backend directory
       run: |
         ./mvnw clean package
 
     - name: Deploy backend to App Engine
       run: |
-        gcloud app deploy backend/app.yaml --quiet
+        gcloud app deploy springapp/backend/app.yaml --quiet  # Updated path to app.yaml
 
     - name: Verify deployment
       run: |
