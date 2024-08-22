@@ -24,7 +24,7 @@ jobs:
         credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
     - name: Build backend
-      working-directory: ./springapp/backend  # Updated path to backend directory
+      working-directory: ./springapp  # Updated path to backend directory
       run: |
         ./mvnw clean package
 
