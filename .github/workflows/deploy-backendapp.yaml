@@ -12,36 +12,32 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        # Check out the latest code from the main branch
-
+      
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
-        # Set up JDK 17 for building the application
+        env:
+          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
 
       - name: Build with Maven
         run: |
           cd springapp 
           mvn clean package -DskipTests
-        # Build the application, skipping tests
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-        # Authenticate with Google Cloud
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: united-zenith-431805-h9
           export_default_credentials: true
-        # Set up Google Cloud SDK
 
       - name: Deploy to App Engine
         run: |
           cd springapp
           gcloud app deploy --quiet
-        # Deploy the application to App Engine
