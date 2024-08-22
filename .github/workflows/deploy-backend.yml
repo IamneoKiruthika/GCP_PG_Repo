@@ -1,0 +1,37 @@
+name: Deploy Backend to Google App Engine
+
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on pushes to the main branch
+
+jobs:
+  build-and-deploy-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        version: '405.0.0'  # Specify the version of gcloud you want to use
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+    - name: Build backend
+      working-directory: ./backend
+      run: |
+        ./mvnw clean package
+
+    - name: Deploy backend to App Engine
+      run: |
+        gcloud app deploy backend/app.yaml --quiet
+
+    - name: Verify deployment
+      run: |
+        gcloud app browse
